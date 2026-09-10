@@ -72,7 +72,14 @@ def compute_soil_moisture(
         if len(watermark) != len(ds_list):
             raise ValueError("If `watermark` is a list/tuple, it must have the same length as `data`.")
         wm_list = list(watermark)
+    elif isinstance(data, dict):
+        ds_list = [
+            _to_dataset(obj)
+            for data_list in data.values()
+            for obj in data_list
+        ]
     else:
+        logger_stream.error(f"Unsupported data type: {type(data)}")
         raise TypeError(f"`watermark` must be DataArray/Dataset or list/tuple. Got {type(watermark)}")
 
     # define the variable list
